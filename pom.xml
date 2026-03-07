@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===== Parent Spring Boot ===== -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.5</version>
+        <relativePath/>
+    </parent>
+
+    <!-- ===== Coordonnées du module ===== -->
+    <groupId>sn.isi.l3gl.api</groupId>
+    <artifactId>product-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>product-api</name>
+    <description>Couche REST – consomme product-core depuis Nexus</description>
+
+    <!-- ===== Propriétés ===== -->
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- ===== Repository Nexus (pour télécharger product-core) ===== -->
+    <repositories>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://localhost:8082/repository/maven-releases/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+    </repositories>
+
+    <!-- ===== Dépendances ===== -->
+    <dependencies>
+
+        <!-- ── Couche REST ── -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--
+            ── Bibliothèque métier depuis Nexus ──
+            Contient : Product, ProductRepository, ProductService
+            Transitif : spring-data-jpa, mysql-connector, hibernate
+        -->
+        <dependency>
+            <groupId>sn.isi.l3gl.core</groupId>
+            <artifactId>product-core</artifactId>
+            <version>0.3.1</version>
+        </dependency>
+
+        <!-- ── Tests ── -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ===== Build ===== -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+              <configuration>
+                <classifier>exec</classifier>   <!-- fat JAR → product-core-X.X.X-exec.jar -->
+              </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
