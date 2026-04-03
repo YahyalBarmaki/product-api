@@ -1,0 +1,33 @@
+services:
+
+  db:
+    image: mysql:8
+    container_name: product-db
+    environment:
+      MYSQL_DATABASE: productdb
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-psecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: yahyalbarmaki/product-api:latest
+    container_name: product-api
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/productdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: secret
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
