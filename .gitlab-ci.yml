@@ -7,29 +7,45 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH == "develop"
 
-test:
-  stage: test
+.maven_template: &maven_config
   image: maven:3.9-amazoncorretto-17
-  script:
-    - mvn test
   cache:
     key: "$CI_PROJECT_PATH"
     paths:
       - .m2/repository
   variables:
     MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  before_script:
+    - |
+      cat > /root/.m2/settings.xml <<EOF
+      <settings>
+        <servers>
+          <server>
+            <id>gitlab</id>
+            <configuration>
+              <httpHeaders>
+                <property>
+                  <name>Job-Token</name>
+                  <value>\${CI_JOB_TOKEN}</value>
+                </property>
+              </httpHeaders>
+            </configuration>
+          </server>
+        </servers>
+      </settings>
+      EOF
+
+test:
+  stage: test
+  <<: *maven_config
+  script:
+    - mvn test
 
 build:
   stage: build
-  image: maven:3.9-amazoncorretto-17
+  <<: *maven_config
   script:
     - mvn clean package -DskipTests
-  cache:
-    key: "$CI_PROJECT_PATH"
-    paths:
-      - .m2/repository
-  variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   artifacts:
     paths:
       - target/*.jar

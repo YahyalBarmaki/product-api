@@ -30,12 +30,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- ===== Repository Nexus (pour télécharger product-core) ===== -->
+    <!-- ===== Repository GitLab Package Registry (product-core) ===== -->
     <repositories>
         <repository>
-            <id>nexus-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://localhost:8082/repository/maven-releases/</url>
+            <id>gitlab</id>
+            <url>https://gitlab.com/api/v4/projects/81039962/packages/maven</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
