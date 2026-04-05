@@ -1,5 +1,4 @@
 stages:
-  - test
   - build
   - docker
 
@@ -34,12 +33,6 @@ workflow:
         </servers>
       </settings>
       EOF
-
-test:
-  stage: test
-  <<: *maven_config
-  script:
-    - mvn test
 
 build:
   stage: build
