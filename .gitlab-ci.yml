@@ -1,4 +1,5 @@
 stages:
+  - test
   - build
   - docker
 
@@ -33,6 +34,21 @@ workflow:
         </servers>
       </settings>
       EOF
+
+test:
+  stage: test
+  <<: *maven_config
+  services:
+    - name: mysql:8
+      alias: mysql
+  variables:
+    MYSQL_DATABASE: productdb
+    MYSQL_ROOT_PASSWORD: secret
+    SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/productdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    SPRING_DATASOURCE_USERNAME: root
+    SPRING_DATASOURCE_PASSWORD: secret
+  script:
+    - mvn test
 
 build:
   stage: build
